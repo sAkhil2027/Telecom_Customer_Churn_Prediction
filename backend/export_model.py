@@ -77,3 +77,8 @@ def train_and_export():
     X_train_scaled[num_cols] = scaler.fit_transform(X_train[num_cols])
     X_test_scaled[num_cols] = scaler.transform(X_test[num_cols])
 
+    print("Training tuned GradientBoostingClassifier...")
+    # Best model hyperparameters discovered in notebook
+    model = GradientBoostingClassifier(max_depth=2, n_estimators=250, learning_rate=0.08, random_state=42)
+    model.fit(X_train_scaled, y_train)
+
