@@ -161,3 +161,46 @@ class ChurnPredictor:
 
         return factors
 
+    def _generate_retention_strategies(self, raw: Dict[str, Any], factors: List[Dict[str, str]]) -> List[Dict[str, str]]:
+        strategies = []
+        contract = str(raw.get("Contract", ""))
+        tech_support = str(raw.get("TechSupport", ""))
+        pay_method = str(raw.get("PaymentMethod", ""))
+        monthly = float(raw.get("MonthlyCharges", 0.0))
+
+        if contract == "Month-to-month":
+            strategies.append({
+                "title": "Contract Transition Incentive",
+                "action": "Offer a 15% promotional discount on a 1-year or 2-year contract upgrade.",
+                "priority": "High Priority"
+            })
+
+        if tech_support == "No":
+            strategies.append({
+                "title": "Complimentary Tech Support Trial",
+                "action": "Bundle free 3-month Premium Tech Support & Online Security to increase stickiness.",
+                "priority": "High Priority"
+            })
+
+        if pay_method == "Electronic check":
+            strategies.append({
+                "title": "Automated Billing Incentive",
+                "action": "Provide a one-time $10 bill credit for switching to Credit Card or Bank Auto-Pay.",
+                "priority": "Medium Priority"
+            })
+
+        if monthly > 80:
+            strategies.append({
+                "title": "Plan Optimization Review",
+                "action": "Proactively reach out with a customer loyalty consultation to tailor services to budget.",
+                "priority": "Medium Priority"
+            })
+
+        if not strategies:
+            strategies.append({
+                "title": "Loyalty Appreciation",
+                "action": "Enroll customer in VIP loyalty perks program to reinforce brand satisfaction.",
+                "priority": "Standard"
+            })
+
+        return strategies
