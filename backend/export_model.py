@@ -43,3 +43,20 @@ def train_and_export():
     target_col = "Churn"
     num_cols = ["tenure", "MonthlyCharges", "TotalCharges"]
     cat_cols = [c for c in df.columns if c not in num_cols and c != target_col]
+
+    # Save mapping for categorical variables
+    encoders = {}
+    cat_mappings = {}
+    df_encoded = df.copy()
+
+    for c in cat_cols:
+        le = LabelEncoder()
+        df_encoded[c] = le.fit_transform(df[c].astype(str))
+        encoders[c] = le
+        cat_mappings[c] = {str(cls_val): int(code) for code, cls_val in enumerate(le.classes_)}
+
+    # Target variable encoding (No: 0, Yes: 1)
+    target_le = LabelEncoder()
+    df_encoded[target_col] = target_le.fit_transform(df[target_col])
+    target_mapping = {str(cls_val): int(code) for code, cls_val in enumerate(target_le.classes_)}
+
