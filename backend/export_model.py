@@ -30,3 +30,16 @@ def train_and_export():
 
     print(f"Loading data from: {data_path}")
     df = pd.read_csv(data_path)
+
+    # Data Preprocessing as done in the notebook
+    if "customerID" in df.columns:
+        df = df.drop(columns=["customerID"])
+
+    df["TotalCharges"] = pd.to_numeric(df["TotalCharges"], errors="coerce")
+    df = df[df["tenure"] != 0].copy()
+    df["TotalCharges"] = df["TotalCharges"].fillna(df["TotalCharges"].mean())
+    df["SeniorCitizen"] = df["SeniorCitizen"].replace({0: "No", 1: "Yes"})
+
+    target_col = "Churn"
+    num_cols = ["tenure", "MonthlyCharges", "TotalCharges"]
+    cat_cols = [c for c in df.columns if c not in num_cols and c != target_col]
