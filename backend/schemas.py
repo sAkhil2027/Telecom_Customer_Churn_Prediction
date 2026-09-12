@@ -47,3 +47,13 @@ class CustomerData(BaseModel):
             }
         }
 
+class RiskFactor(BaseModel):
+    factor: str
+    impact: str
+    detail: str
+
+class RetentionStrategy(BaseModel):
+    title: str
+    action: str
+    priority: str
+
