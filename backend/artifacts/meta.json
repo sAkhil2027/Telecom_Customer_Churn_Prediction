@@ -1,0 +1,152 @@
+{
+  "feature_order": [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "tenure",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "num_cols": [
+    "tenure",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "cat_cols": [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod"
+  ],
+  "cat_mappings": {
+    "gender": {
+      "Female": 0,
+      "Male": 1
+    },
+    "SeniorCitizen": {
+      "No": 0,
+      "Yes": 1
+    },
+    "Partner": {
+      "No": 0,
+      "Yes": 1
+    },
+    "Dependents": {
+      "No": 0,
+      "Yes": 1
+    },
+    "PhoneService": {
+      "No": 0,
+      "Yes": 1
+    },
+    "MultipleLines": {
+      "No": 0,
+      "No phone service": 1,
+      "Yes": 2
+    },
+    "InternetService": {
+      "DSL": 0,
+      "Fiber optic": 1,
+      "No": 2
+    },
+    "OnlineSecurity": {
+      "No": 0,
+      "No internet service": 1,
+      "Yes": 2
+    },
+    "OnlineBackup": {
+      "No": 0,
+      "No internet service": 1,
+      "Yes": 2
+    },
+    "DeviceProtection": {
+      "No": 0,
+      "No internet service": 1,
+      "Yes": 2
+    },
+    "TechSupport": {
+      "No": 0,
+      "No internet service": 1,
+      "Yes": 2
+    },
+    "StreamingTV": {
+      "No": 0,
+      "No internet service": 1,
+      "Yes": 2
+    },
+    "StreamingMovies": {
+      "No": 0,
+      "No internet service": 1,
+      "Yes": 2
+    },
+    "Contract": {
+      "Month-to-month": 0,
+      "One year": 1,
+      "Two year": 2
+    },
+    "PaperlessBilling": {
+      "No": 0,
+      "Yes": 1
+    },
+    "PaymentMethod": {
+      "Bank transfer (automatic)": 0,
+      "Credit card (automatic)": 1,
+      "Electronic check": 2,
+      "Mailed check": 3
+    }
+  },
+  "target_mapping": {
+    "No": 0,
+    "Yes": 1
+  },
+  "metrics": {
+    "accuracy": 80.66,
+    "roc_auc": 84.11
+  },
+  "feature_importances": {
+    "Contract": 0.3571857567395199,
+    "tenure": 0.1839648220055993,
+    "MonthlyCharges": 0.18116177423288657,
+    "TotalCharges": 0.08257711159091106,
+    "OnlineSecurity": 0.07489441451295538,
+    "TechSupport": 0.06506378738712837,
+    "PaymentMethod": 0.012634435500415458,
+    "SeniorCitizen": 0.012050028917302374,
+    "OnlineBackup": 0.008682162934472085,
+    "PaperlessBilling": 0.008145718913521451,
+    "DeviceProtection": 0.004941573528152532,
+    "MultipleLines": 0.00462406398698089,
+    "InternetService": 0.0015227284373990867,
+    "PhoneService": 0.001338291943696261,
+    "Dependents": 0.0004402900278105306,
+    "gender": 0.00040991734352824604,
+    "StreamingTV": 0.0003631219977203534,
+    "Partner": 0.0,
+    "StreamingMovies": 0.0
+  }
+}
