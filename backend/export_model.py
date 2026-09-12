@@ -82,3 +82,15 @@ def train_and_export():
     model = GradientBoostingClassifier(max_depth=2, n_estimators=250, learning_rate=0.08, random_state=42)
     model.fit(X_train_scaled, y_train)
 
+    y_pred = model.predict(X_test_scaled)
+    y_prob = model.predict_proba(X_test_scaled)[:, 1]
+
+    acc = float(accuracy_score(y_test, y_pred))
+    roc_auc = float(roc_auc_score(y_test, y_prob))
+
+    print(f"Model Performance -> Accuracy: {acc*100:.2f}%, ROC-AUC: {roc_auc*100:.2f}%")
+
+    # Extract feature importances
+    feature_importances = dict(zip(feature_order, [float(v) for v in model.feature_importances_]))
+    sorted_importances = dict(sorted(feature_importances.items(), key=lambda item: item[1], reverse=True))
+
