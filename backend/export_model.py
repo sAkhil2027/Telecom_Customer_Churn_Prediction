@@ -94,3 +94,34 @@ def train_and_export():
     feature_importances = dict(zip(feature_order, [float(v) for v in model.feature_importances_]))
     sorted_importances = dict(sorted(feature_importances.items(), key=lambda item: item[1], reverse=True))
 
+    # Save artifacts
+    model_path = os.path.join(artifacts_dir, "churn_model.pkl")
+    scaler_path = os.path.join(artifacts_dir, "scaler.pkl")
+    meta_path = os.path.join(artifacts_dir, "meta.json")
+
+    joblib.dump(model, model_path)
+    joblib.dump(scaler, scaler_path)
+
+    metadata = {
+        "feature_order": feature_order,
+        "num_cols": num_cols,
+        "cat_cols": cat_cols,
+        "cat_mappings": cat_mappings,
+        "target_mapping": target_mapping,
+        "metrics": {
+            "accuracy": round(acc * 100, 2),
+            "roc_auc": round(roc_auc * 100, 2)
+        },
+        "feature_importances": sorted_importances
+    }
+
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=2)
+
+    print(f"Successfully exported artifacts to {artifacts_dir}:")
+    print(f" - {model_path}")
+    print(f" - {scaler_path}")
+    print(f" - {meta_path}")
+
+if __name__ == "__main__":
+    train_and_export()
