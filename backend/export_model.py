@@ -60,3 +60,20 @@ def train_and_export():
     df_encoded[target_col] = target_le.fit_transform(df[target_col])
     target_mapping = {str(cls_val): int(code) for code, cls_val in enumerate(target_le.classes_)}
 
+    # Features and target split
+    feature_order = [c for c in df_encoded.columns if c != target_col]
+    X = df_encoded[feature_order]
+    y = df_encoded[target_col].values
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=4, stratify=y
+    )
+
+    # Fit scaler on numeric columns
+    scaler = StandardScaler()
+    X_train_scaled = X_train.copy()
+    X_test_scaled = X_test.copy()
+
+    X_train_scaled[num_cols] = scaler.fit_transform(X_train[num_cols])
+    X_test_scaled[num_cols] = scaler.transform(X_test[num_cols])
+
