@@ -12,3 +12,21 @@ def train_and_export():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     artifacts_dir = os.path.join(base_dir, "artifacts")
     os.makedirs(artifacts_dir, exist_ok=True)
+
+    # Locate dataset
+    data_paths = [
+        os.path.join(base_dir, "..", "data.csv"),
+        os.path.join(base_dir, "data.csv"),
+        os.path.join(base_dir, "..", "Scripts", "data.csv")
+    ]
+    data_path = None
+    for p in data_paths:
+        if os.path.exists(p):
+            data_path = p
+            break
+
+    if not data_path:
+        raise FileNotFoundError("Could not find data.csv")
+
+    print(f"Loading data from: {data_path}")
+    df = pd.read_csv(data_path)
