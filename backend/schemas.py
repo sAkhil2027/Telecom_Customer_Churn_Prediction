@@ -21,3 +21,29 @@ class CustomerData(BaseModel):
     PaymentMethod: str = Field(..., description="Payment Method ('Electronic check', 'Mailed check', 'Bank transfer (automatic)', 'Credit card (automatic)')")
     MonthlyCharges: float = Field(..., ge=0, description="Monthly Charges (USD)")
     TotalCharges: Optional[float] = Field(None, description="Total Charges (USD, auto-calculated if omitted)")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "gender": "Female",
+                "SeniorCitizen": "No",
+                "Partner": "No",
+                "Dependents": "No",
+                "tenure": 3,
+                "PhoneService": "Yes",
+                "MultipleLines": "No",
+                "InternetService": "Fiber optic",
+                "OnlineSecurity": "No",
+                "OnlineBackup": "No",
+                "DeviceProtection": "No",
+                "TechSupport": "No",
+                "StreamingTV": "Yes",
+                "StreamingMovies": "No",
+                "Contract": "Month-to-month",
+                "PaperlessBilling": "Yes",
+                "PaymentMethod": "Electronic check",
+                "MonthlyCharges": 85.5,
+                "TotalCharges": 256.5
+            }
+        }
+
