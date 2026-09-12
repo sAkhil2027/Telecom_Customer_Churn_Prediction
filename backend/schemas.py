@@ -57,3 +57,14 @@ class RetentionStrategy(BaseModel):
     action: str
     priority: str
 
+class PredictionResult(BaseModel):
+    churn_prediction: str
+    churn_code: int
+    churn_probability: float
+    retention_probability: float
+    risk_level: str
+    risk_color: str
+    risk_factors: List[RiskFactor]
+    retention_strategies: List[RetentionStrategy]
+    metrics: Dict[str, Any]
+
