@@ -28,3 +28,17 @@ class ChurnPredictor:
         self.cat_cols = self.meta["cat_cols"]
         self.cat_mappings = self.meta["cat_mappings"]
         self.metrics = self.meta.get("metrics", {})
+
+    def preprocess(self, data_dict: Dict[str, Any]) -> pd.DataFrame:
+        row = data_dict.copy()
+
+        # Handle TotalCharges if not provided or empty
+        if row.get("TotalCharges") is None or str(row.get("TotalCharges")).strip() == "":
+            tenure = float(row.get("tenure", 1))
+            monthly = float(row.get("MonthlyCharges", 0.0))
+            row["TotalCharges"] = tenure * monthly
+        else:
+            row["TotalCharges"] = float(row["TotalCharges"])
+
+        row["tenure"] = int(row.get("tenure", 1))
+        row["MonthlyCharges"] = float(row.get("MonthlyCharges", 0.0))
