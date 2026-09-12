@@ -69,3 +69,36 @@ class ChurnPredictor:
         df_scaled[self.num_cols] = self.scaler.transform(df_input[self.num_cols])
         return df_scaled
 
+    def predict(self, raw_customer: Dict[str, Any]) -> Dict[str, Any]:
+        df_scaled = self.preprocess(raw_customer)
+        churn_prob = float(self.model.predict_proba(df_scaled)[0, 1])
+        churn_pred = int(churn_prob >= 0.5)
+
+        retention_prob = 1.0 - churn_prob
+
+        # Determine risk tier & styling
+        if churn_prob >= 0.60:
+            risk_level = "High Risk"
+            risk_color = "#ef4444"
+        elif churn_prob >= 0.35:
+            risk_level = "Moderate Risk"
+            risk_color = "#f59e0b"
+        else:
+            risk_level = "Low Risk"
+            risk_color = "#10b981"
+
+        risk_factors = self._extract_risk_factors(raw_customer, churn_prob)
+        retention_strategies = self._generate_retention_strategies(raw_customer, risk_factors)
+
+        return {
+            "churn_prediction": "Yes" if churn_pred == 1 else "No",
+            "churn_code": churn_pred,
+            "churn_probability": round(churn_prob * 100, 1),
+            "retention_probability": round(retention_prob * 100, 1),
+            "risk_level": risk_level,
+            "risk_color": risk_color,
+            "risk_factors": risk_factors,
+            "retention_strategies": retention_strategies,
+            "metrics": self.metrics
+        }
+
