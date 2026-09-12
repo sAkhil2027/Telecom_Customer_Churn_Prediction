@@ -111,3 +111,13 @@ async def predict_batch(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to process CSV file: {str(e)}")
 
+# Mount static frontend files if directory exists
+if os.path.exists(frontend_dir):
+    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+
+    @app.get("/")
+    def serve_frontend():
+        index_file = os.path.join(frontend_dir, "index.html")
+        if os.path.exists(index_file):
+            return FileResponse(index_file)
+        return JSONResponse({"message": "Frontend index.html not found"})
