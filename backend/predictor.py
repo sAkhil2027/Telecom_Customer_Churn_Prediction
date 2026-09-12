@@ -102,3 +102,62 @@ class ChurnPredictor:
             "metrics": self.metrics
         }
 
+    def _extract_risk_factors(self, raw: Dict[str, Any], churn_prob: float) -> List[Dict[str, str]]:
+        factors = []
+        contract = str(raw.get("Contract", ""))
+        tenure = int(raw.get("tenure", 0))
+        monthly = float(raw.get("MonthlyCharges", 0.0))
+        tech_support = str(raw.get("TechSupport", ""))
+        online_sec = str(raw.get("OnlineSecurity", ""))
+        pay_method = str(raw.get("PaymentMethod", ""))
+        internet_svc = str(raw.get("InternetService", ""))
+
+        if contract == "Month-to-month":
+            factors.append({
+                "factor": "Contract Type",
+                "impact": "High Risk Driver",
+                "detail": "Customer is on a Month-to-month plan with no long-term commitment."
+            })
+        elif contract in ["One year", "Two year"]:
+            factors.append({
+                "factor": "Contract Type",
+                "impact": "Retention Anchor",
+                "detail": f"Signed under a {contract} contract which dramatically lowers churn odds."
+            })
+
+        if tenure <= 6:
+            factors.append({
+                "factor": "Short Tenure",
+                "impact": "High Risk Driver",
+                "detail": f"Customer has only been active for {tenure} month(s). Early onboarding stage has highest churn rate."
+            })
+        elif tenure >= 24:
+            factors.append({
+                "factor": "Long-term Tenure",
+                "impact": "Loyalty Indicator",
+                "detail": f"Customer has maintained tenure for {tenure} months, representing an established account."
+            })
+
+        if internet_svc == "Fiber optic" and tech_support == "No":
+            factors.append({
+                "factor": "Unsupported High-Speed Service",
+                "impact": "Friction Point",
+                "detail": "Customer subscribes to Fiber optic internet but lacks Tech Support or Online Security add-ons."
+            })
+
+        if monthly > 80:
+            factors.append({
+                "factor": "Above Average Monthly Cost",
+                "impact": "Price Sensitivity",
+                "detail": f"Monthly billing of ${monthly:.2f} puts customer in top tier price bracket."
+            })
+
+        if pay_method == "Electronic check":
+            factors.append({
+                "factor": "Payment Method",
+                "impact": "Behavioral Risk",
+                "detail": "Historical data shows manual Electronic check payers churn 2.5x more often than automated payers."
+            })
+
+        return factors
+
