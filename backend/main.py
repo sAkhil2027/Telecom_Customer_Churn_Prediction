@@ -4,7 +4,7 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, UploadFile, File, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse,JSONResponse
 
 import sys
 
@@ -37,3 +37,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Initialize predictor
+try:
+    predictor = ChurnPredictor()
+except Exception as e:
+    print(f"Warning: Predictor failed to load initially: {e}")
+    predictor = None
+
+# Paths
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+frontend_dir = os.path.join(base_dir, "frontend")
+
+@app.get("/api/health")
+def health_check():
+    if predictor is None:
+        return {"status": "unhealthy", "error": "Model artifacts not loaded"}
+    return {
+        "status": "healthy",
+        "model_type": "GradientBoostingClassifier (Tuned)",
+        "metrics": predictor.metrics,
+        "features_count": len(predictor.feature_order)
+    }
+
