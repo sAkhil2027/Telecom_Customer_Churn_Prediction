@@ -42,3 +42,30 @@ class ChurnPredictor:
 
         row["tenure"] = int(row.get("tenure", 1))
         row["MonthlyCharges"] = float(row.get("MonthlyCharges", 0.0))
+
+        # Standardize categorical inputs with fallbacks
+        encoded_dict = {}
+        for c in self.feature_order:
+            if c in self.cat_cols:
+                raw_val = str(row.get(c, "")).strip()
+                mapping = self.cat_mappings.get(c, {})
+                if raw_val in mapping:
+                    encoded_dict[c] = mapping[raw_val]
+                else:
+                    # Find closest case-insensitive match or default to 0
+                    matched = None
+                    for k, v in mapping.items():
+                        if k.lower() == raw_val.lower():
+                            matched = v
+                            break
+                    encoded_dict[c] = matched if matched is not None else 0
+            else:
+                encoded_dict[c] = float(row.get(c, 0.0))
+
+        df_input = pd.DataFrame([encoded_dict])[self.feature_order]
+
+        # Apply scaling to numeric features
+        df_scaled = df_input.copy()
+        df_scaled[self.num_cols] = self.scaler.transform(df_input[self.num_cols])
+        return df_scaled
+
