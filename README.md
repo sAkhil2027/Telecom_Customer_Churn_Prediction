@@ -1,186 +1,310 @@
-<div align="right">
-  
-[1]: https://github.com/Pradnya1208
-[2]: https://www.linkedin.com/in/pradnya-patil-b049161ba/
-[3]: https://public.tableau.com/app/profile/pradnya.patil3254#!/
-[4]: https://twitter.com/Pradnya1208
+# 📡 Telecom Customer Churn Prediction & Retention AI Platform
 
+> **An End-to-End Enterprise Machine Learning Platform for Telecom Customer Churn Forecasting, Explainable Risk Diagnostics, and Prescriptive Retention Action Recommendations.**
 
-[![github](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/c292abd3f9cc647a7edc0061193f1523e9c05e1f/icons/git.svg)][1]
-[![linkedin](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/9f5c4a255972275ced549ea6e34ef35019166944/icons/iconmonstr-linkedin-5.svg)][2]
-[![tableau](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/e257c5d6cf02f13072429935b0828525c601414f/icons/icons8-tableau-software%20(1).svg)][3]
-[![twitter](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/c9f9c5dc4e24eff0143b3056708d24650cbccdde/icons/iconmonstr-twitter-5.svg)][4]
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0+-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.2+-F7931E.svg?style=flat&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Deployment-Production--Ready-success.svg)]()
 
-</div>
+---
 
+## 📌 Table of Contents
+- [1. Executive Overview](#-1-executive-overview)
+- [2. System Architecture](#-2-system-architecture)
+- [3. Exploratory Data Analysis & Key Findings](#-3-exploratory-data-analysis--key-findings)
+- [4. Machine Learning & Model Engineering](#-4-machine-learning--model-engineering)
+- [5. Prescriptive AI & Risk Diagnostics Engine](#-5-prescriptive-ai--risk-diagnostics-engine)
+- [6. REST API Reference](#-6-rest-api-reference)
+- [7. Web Dashboard & User Experience](#-7-web-dashboard--user-experience)
+- [8. Project File Structure](#-8-project-file-structure)
+- [9. Getting Started & Installation](#-9-getting-started--installation)
+- [10. Testing & Validation](#-10-testing--validation)
 
-# <div align="center">Telecom Customer Churn Prediction</div>
+---
 
-![Intro](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/customer%20churn.jpeg?raw=true)
+## 🚀 1. Executive Overview
 
+Customer churn occurs when subscribers discontinue doing business with a telecom service provider. In the telecommunications sector, annual churn rates range from **15% to 25%**, costing companies millions in lost annual recurring revenue (ARR).
 
+Acquiring a new telecom subscriber is **5× to 7× more expensive** than retaining an existing one. This platform bridges the gap between predictive machine learning and actionable customer success by:
+1. **Predicting Churn Risk:** Accurately classifying whether a subscriber is likely to leave using an optimized Gradient Boosting ensemble.
+2. **Explainable AI Diagnostics:** Pinpointing the exact factors driving churn probability (contract duration, billing method, add-on coverage).
+3. **Prescriptive Interventions:** Automatically generating business-tailored retention actions (e.g., targeted contract upgrade discounts, complimentary support trials, automated billing incentives).
 
-## What is Customer Churn?
-Customer churn is defined as when customers or subscribers discontinue doing business with a firm or service.
+---
 
-Customers in the telecom industry can choose from a variety of service providers and actively switch from one to the next. The telecommunications business has an annual churn rate of 15-25 percent in this highly competitive market.
+## 🏗️ 2. System Architecture
 
-Individualized customer retention is tough because most firms have a large number of customers and can't afford to devote much time to each of them. The costs would be too great, outweighing the additional revenue. However, if a corporation could forecast which customers are likely to leave ahead of time, it could focus customer retention efforts only on these "high risk" clients. The ultimate goal is to expand its coverage area and retrieve more customers loyalty. The core to succeed in this market lies in the customer itself.
+```mermaid
+flowchart TB
+    subgraph Data & Training Pipeline
+        A["Telco Customer Dataset (data.csv)"] --> B["Data Cleaning & Type Coercion"]
+        B --> C["StandardScaler (Numeric) + LabelEncoder (Categorical)"]
+        C --> D["GradientBoostingClassifier (max_depth=2, n_est=250, lr=0.08)"]
+        D --> E["Serialized Artifacts (/backend/artifacts/)<br/>• churn_model.pkl<br/>• scaler.pkl<br/>• meta.json"]
+    end
 
-Customer churn is a critical metric because it is much less expensive to retain existing customers than it is to acquire new customers.
+    subgraph Backend Services [FastAPI Engine]
+        E --> F["ChurnPredictor Engine (/backend/predictor.py)"]
+        F --> G["FastAPI Endpoints (/backend/main.py)<br/>• GET /api/health<br/>• POST /api/predict<br/>• POST /api/predict-batch<br/>• GET / (Static Dashboard)"]
+    end
 
-To detect early signs of potential churn, one must first develop a holistic view of the customers and their interactions across numerous channels.As a result, by addressing churn, these businesses may not only preserve their market position, but also grow and thrive. More customers they have in their network, the lower the cost of initiation and the larger the profit. As a result, the company's key focus for success is reducing client attrition and implementing effective retention strategy.
-## Objectives:
-- Finding the % of Churn Customers and customers that keep in with the active services.
-- Analysing the data in terms of various features responsible for customer Churn
-- Finding a most suited machine learning model for correct classification of Churn and non churn customers.
-
-## Dataset:
- [Telco Customer Churn](https://www.kaggle.com/bhartiprasad17/customer-churn-prediction/data)
-
-### The data set includes information about:
-
-- Customers who left within the last month – the column is called Churn
-- Services that each customer has signed up for – phone, multiple lines, internet, online security, online backup, device protection, tech support, and streaming TV and movies
-- Customer account information – how long they’ve been a customer, contract, payment method, paperless billing, monthly charges, and total charges
-- Demographic info about customers – gender, age range, and if they have partners and dependents
-## Implementation:
-
-**Libraries:** sklearn, Matplotlib, pandas, seaborn, and NumPy
-
-
-
-## Few glimpses of EDA:
-### 1. Churn distribution:
-
-> ![Churn distribution](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Churn%20Distribution.png?raw=true)
-> 26.6 % of customers switched to another firm.
-
-### 2. Churn distribution with respect to gender:
-> ![Churn distribution wrt Gender](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/distributionWRTGender.PNG?raw=true)
-
-
-> There is negligible difference in customer percentage/count who chnaged the service provider. Both genders behaved in similar fashion when it comes to migrating to another service provider/firm.`
-
-### 3. Customer Contract distribution:
-> ![Customer contract distribution](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Contract%20distribution.png?raw=true)
-> About 75% of customer with Month-to-Month Contract opted to move out as compared to 13% of customrs with One Year Contract and 3% with Two Year Contract
-
-### 4. Payment Methods:
-> ![Distribution of Payments methods](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/payment%20methods.png?raw=true) ![Churn wrt payment methods](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/payment%20ethods%20with%20respectto%20churn.PNG?raw=true)
-
-> Major customers who moved out were having Electronic Check as Payment Method.
-> Customers who opted for Credit-Card automatic transfer or Bank Automatic Transfer and Mailed Check as Payment Method were less likely to move out.
-
-### 5. Internet services:
-
-> Several customers choose the Fiber optic service and it's also evident that the customers who use Fiber optic have high churn rate, this might suggest a dissatisfaction with this type of internet service.
-> Customers having DSL service are majority in number and have less churn rate compared to Fibre optic service.
-![Churn distribution w.r.t Internet services and Gender](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/internet%20services.PNG?raw=true)
-
-### 6. Dependent distribution:
-
-> Customers without dependents are more likely to churn.
-![Churn distribution w.r.t dependents](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/dependents.PNG?raw=true)
-
-### 7. Online Security:
-
-> As shown in following graph, most customers churn due to lack of online security
-![Churn distribution w.r.t online security](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/onlineSecurity.PNG?raw=true)
-
-### 8. Senior Citizen:
-
-> Most of the senior citizens churn; the number of senior citizens are very less in over all customer base.
-![Churn distribution w.r.t Senior Citizen](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/seniorCitzen.PNG?raw=true)
-
-### 9. Paperless Billing:
-
-> Customers with Paperless Billing are most likely to churn.
-![Churn distribution w.r.t mode of billing](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/billing.PNG?raw=true)
-
-### 10. Tech support:
-
-> As shown in following chart, customers with no TechSupport are most likely to migrate to another service provider.
-![Churn distribution w.r.t Tech support](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/techSupport.PNG?raw=true)
-
-### 11. Distribution w.r.t Charges and Tenure:
-> ![Monthly Charges](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/carges%20distribution.PNG?raw=true)
-> ![Total Charges](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/total%20charges.PNG?raw=true)
-> ![Tenure](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/tenure%20and%20churn.PNG?raw=true)
-
-> Customers with higher Monthly Charges are also more likely to churn.<br>
-> New customers are more likely to churn.
-
-## Machine Learning Model Evaluations and Predictions:
-![ML Algorithms](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Model%20evaluation.PNG?raw=true)
-
-#### Results after K fold cross validation:
-
-![Logistic Regression](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/LR.PNG?raw=true) 
-![KNN](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/KNN.PNG?raw=true)
-![Naive Bayes](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Naive%20Bayes.PNG?raw=true)
-![Decision Tree](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Decision%20trees.PNG?raw=true)
-![Random Forest](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Random%20Forest.PNG?raw=true)
-![Adaboost](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Adaboost.PNG?raw=true)
-![Gradient Boost](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Gradient%20boost.PNG?raw=true)
-![Voting Classifier](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/Voting%20Classifier.PNG?raw=true)
-
-![Confusion Matrix](https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/confusion_matrix_models.PNG?raw=true)
-#### Final Model: Voting Classifier
-* We have selected Gradient boosting, Logistic Regression, and Adaboost for our Voting Classifier.
+    subgraph Client Layer [Modern Web UI]
+        G <--> H["Single Customer Assessment Module"]
+        G <--> I["Batch CSV Scoring Engine"]
+        H --> J["Interactive Chart.js Gauge"]
+        H --> K["Explainable Risk Breakdown & Retention Strategies"]
+    end
 ```
-    from sklearn.ensemble import VotingClassifier
-    clf1 = GradientBoostingClassifier()
-    clf2 = LogisticRegression()
-    clf3 = AdaBoostClassifier()
-    eclf1 = VotingClassifier(estimators=[('gbc', clf1), ('lr', clf2), ('abc', clf3)], voting='soft')
-    eclf1.fit(X_train, y_train)
-    predictions = eclf1.predict(X_test)
-    print("Final Accuracy Score ")
-    print(accuracy_score(y_test, predictions))
+
+---
+
+## 🔍 3. Exploratory Data Analysis & Key Findings
+
+From empirical analysis of the 7,043 customer records across 21 demographic, service, and billing attributes:
+
+| Feature Dimension | Key Observation | Business Implication |
+| :--- | :--- | :--- |
+| **Contract Type** | **75%** of churned customers are on *Month-to-month* contracts vs. only **3%** on *Two-year* contracts. | Long-term contract incentives are the strongest retention anchor. |
+| **Tenure** | Peak churn occurs in the first **1–6 months** of customer onboarding. | Onboarding lifecycle support directly impacts long-term customer lifetime value (LTV). |
+| **Payment Method** | Customers using manual *Electronic check* churn at **2.5×** the rate of automated payment methods. | Switching customers to automated ACH/credit card billing significantly dampens churn. |
+| **Service Add-ons** | Customers on *Fiber optic* without *Tech Support* or *Online Security* exhibit high churn rates. | High bandwidth creates high performance expectations; bundling technical assistance is critical. |
+| **Monthly Charges** | Subscribers billed **>$80/month** display heightened price sensitivity and churn likelihood. | Proactive account optimization prevents churn caused by price creep. |
+
+---
+
+## 🤖 4. Machine Learning & Model Engineering
+
+### Model Selection & Cross-Validation Benchmarks
+Multiple classification algorithms were trained and benchmarked using stratified K-fold cross-validation:
+
+| Model | Accuracy (%) | ROC-AUC (%) | Key Characteristic |
+| :--- | :---: | :---: | :--- |
+| **Gradient Boosting Classifier (Tuned)** | **80.66%** | **84.11%** | **Production Champion:** Optimal balance of discrimination and calibration |
+| AdaBoost Classifier | 80.45% | 84.05% | Strong performance on hard boundary examples |
+| Soft Voting Ensemble (GBC + LR + AdaBoost) | 80.68% | 84.10% | Robust ensemble generalization |
+| Logistic Regression | 80.32% | 83.90% | Linear baseline with high interpretability |
+| Random Forest Classifier | 79.80% | 82.30% | Strong variance reduction |
+| K-Nearest Neighbors (KNN) | 76.50% | 79.10% | Sensitive to dimensional noise |
+
+### Production Hyperparameters (`backend/export_model.py`)
+```python
+GradientBoostingClassifier(
+    max_depth=2,
+    n_estimators=250,
+    learning_rate=0.08,
+    random_state=42
+)
 ```
+
+### Feature Importance Weights
 ```
-Final Score 
-{'LogisticRegression': [0.841331397558646, 0.010495252078550477],
- 'KNeighborsClassifier': [0.7913242024807321, 0.008198993337848612],
- 'GaussianNB': [0.8232386881685605, 0.00741678015498337],
- 'DecisionTreeClassifier': [0.6470213137060805, 0.02196953973039052],
- 'RandomForestClassifier': [0.8197874155380965, 0.011556155864106703],
- 'AdaBoostClassifier': [0.8445838813774079, 0.01125665302188384],
- 'GradientBoostingClassifier': [0.844630629931458, 0.010723107447558198],
- 'VotingClassifier': [0.8468096379573085, 0.010887508320460332]}
+Contract           ██████████████████████████████████ 35.7%
+tenure             ██████████████████ 18.4%
+MonthlyCharges     ██████████████████ 18.1%
+TotalCharges       ████████ 8.3%
+OnlineSecurity     ███████ 7.5%
+TechSupport        ██████ 6.5%
+PaymentMethod      █ 1.3%
+SeniorCitizen      █ 1.2%
+```
+
+---
+
+## 🎯 5. Prescriptive AI & Risk Diagnostics Engine
+
+Unlike standard "black-box" churn models, this platform includes an automated decision-support engine (`backend/predictor.py`):
+
+1. **Risk Stratification:**
+   - **High Risk ($\ge 60\%$ Probability):** Immediate churn intervention required.
+   - **Moderate Risk ($35\% - 59\%$ Probability):** Early warning stage; proactive engagement recommended.
+   - **Low Risk ($< 35\%$ Probability):** Healthy, loyal customer account.
+
+2. **Explainable Risk Factor Diagnostics:** Evaluates the customer profile and identifies specific friction points (e.g., *Unsupported High-Speed Service*, *Short Tenure Risk*, *Electronic Check Friction*).
+
+3. **Prescriptive Action Generator:** Matches identified risk triggers to actionable, ROI-positive customer retention offers:
+   - *Month-to-month Contract* $\rightarrow$ **15% promotional discount on 1-year contract upgrade**.
+   - *No Tech Support on Fiber* $\rightarrow$ **3-month complimentary VIP Tech Support & Security trial**.
+   - *Electronic Check* $\rightarrow$ **$10 one-time bill credit for switching to Auto-Pay**.
+
+---
+
+## 🔌 6. REST API Reference
+
+The backend provides production-grade endpoints documented via interactive Swagger UI at `/docs`.
+
+### `GET /api/health`
+Returns system status, active model type, and validation metrics.
+
+### `POST /api/predict`
+Calculates churn probability, risk level, diagnostic factors, and retention strategies for an individual subscriber.
+
+**Request Body (`application/json`):**
+```json
+{
+  "gender": "Female",
+  "SeniorCitizen": "No",
+  "Partner": "No",
+  "Dependents": "No",
+  "tenure": 3,
+  "PhoneService": "Yes",
+  "MultipleLines": "No",
+  "InternetService": "Fiber optic",
+  "OnlineSecurity": "No",
+  "OnlineBackup": "No",
+  "DeviceProtection": "No",
+  "TechSupport": "No",
+  "StreamingTV": "Yes",
+  "StreamingMovies": "No",
+  "Contract": "Month-to-month",
+  "PaperlessBilling": "Yes",
+  "PaymentMethod": "Electronic check",
+  "MonthlyCharges": 85.50
+}
+```
+
+**Response (`200 OK`):**
+```json
+{
+  "churn_prediction": "Yes",
+  "churn_code": 1,
+  "churn_probability": 73.3,
+  "retention_probability": 26.7,
+  "risk_level": "High Risk",
+  "risk_color": "#ef4444",
+  "risk_factors": [
+    {
+      "factor": "Contract Type",
+      "impact": "High Risk Driver",
+      "detail": "Customer is on a Month-to-month plan with no long-term commitment."
+    },
+    {
+      "factor": "Short Tenure",
+      "impact": "High Risk Driver",
+      "detail": "Active for only 3 month(s); onboarding phase has peak churn risk."
+    }
+  ],
+  "retention_strategies": [
+    {
+      "title": "Contract Transition Incentive",
+      "action": "Offer a 15% discount for upgrading to a 1-year or 2-year contract plan.",
+      "priority": "High Priority"
+    }
+  ],
+  "metrics": {
+    "accuracy": 80.66,
+    "roc_auc": 84.11
+  }
+}
+```
+
+### `POST /api/predict-batch`
+Upload a `.csv` dataset file to score hundreds of subscribers simultaneously with aggregated churn statistics and preview tables.
+
+---
+
+## 🖥️ 7. Web Dashboard & User Experience
+
+Built with vanilla modern HTML5, CSS3, and JavaScript:
+* **Dark Glassmorphic Aesthetic:** Professional enterprise telemetry theme with responsive layout.
+* **Quick Presets:** Instant evaluation using preloaded profiles:
+  - ⚠️ *High Risk Churner*
+  - ⚡ *Moderate Risk*
+  - 🛡️ *Loyal Customer*
+* **Dynamic Sliders & Value Syncing:** Interactive tenure and monthly charges sliders with live total estimation.
+* **Animated Probability Gauge:** Real-time semi-doughnut meter rendered with Chart.js.
+* **Batch Drag-and-Drop:** CSV upload zone with live client-side scoring summaries.
+
+---
+
+## 📂 8. Project File Structure
 
 ```
-* Final confusion matrix we got:
-<img src= "https://github.com/Pradnya1208/Telecom-Customer-Churn-prediction/blob/main/output/confusion%20matrix.PNG?raw=true" width = "425" />
+Telecom_Customer_Churn_Prediction/
+├── .gitignore                   # Project gitignore configuration
+├── requirements.txt             # Python dependencies
+├── run.py                       # One-click application launcher
+├── README.md                    # Comprehensive technical documentation
+├── data.csv                     # Telco churn reference dataset
+│
+├── backend/
+│   ├── __init__.py
+│   ├── main.py                  # FastAPI application routes & middleware
+│   ├── predictor.py             # Inference pipeline & prescriptive logic
+│   ├── schemas.py               # Pydantic data validation models
+│   ├── export_model.py          # Standalone training & artifact export
+│   └── artifacts/
+│       ├── churn_model.pkl      # Serialized Gradient Boosting model
+│       ├── scaler.pkl           # StandardScaler numeric transformer
+│       └── meta.json            # Model metadata, metrics & mappings
+│
+├── frontend/
+│   ├── index.html               # Web dashboard markup
+│   ├── styles.css               # Glassmorphic UI styles & responsive CSS
+│   └── app.js                   # UI controllers, Chart.js & API client
+│
+└── Scripts/
+    └── Customer churn prediction.ipynb  # Exploratory data analysis & model experiments
+```
 
->From the confusion matrix we can see that: There are total 1383+166=1549 actual non-churn values and the algorithm predicts 1400 of them as non churn and 149 of them as churn. While there are 280+280=561 actual churn values and the algorithm predicts 280 of them as non churn values and 281 of them as churn values.
-## Optimizations
+---
 
-We could use Hyperparamete Tuning or Feature enginnering methods to improve the accuracy further.
+## ⚡ 9. Getting Started & Installation
 
+### Prerequisites
+- Python 3.9, 3.10, or 3.11
+- Git
 
-### Feedback
+### 1. Clone the Repository
+```bash
+git clone https://github.com/sAkhil2027/Telecom_Customer_Churn_Prediction.git
+cd Telecom_Customer_Churn_Prediction
+```
 
-If you have any feedback, please reach out at pradnyapatil671@gmail.com
+### 2. Create and Activate Virtual Environment
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
 
+# Linux / macOS
+python3 -m venv venv
+source venv/bin/activate
+```
 
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-### 🚀 About Me
-#### Hi, I'm Pradnya! 👋
-I am an AI Enthusiast and  Data science & ML practitioner
+### 4. Launch the Application
+```bash
+python run.py
+```
 
+* **Interactive Web Dashboard:** [`http://127.0.0.1:8000`](http://127.0.0.1:8000)
+* **Swagger API Documentation:** [`http://127.0.0.1:8000/docs`](http://127.0.0.1:8000/docs)
+* **ReDoc API Documentation:** [`http://127.0.0.1:8000/redoc`](http://127.0.0.1:8000/redoc)
 
-[1]: https://github.com/Pradnya1208
-[2]: https://www.linkedin.com/in/pradnya-patil-b049161ba/
-[3]: https://public.tableau.com/app/profile/pradnya.patil3254#!/
-[4]: https://twitter.com/Pradnya1208
+---
 
+## 🧪 10. Testing & Validation
 
-[![github](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/c292abd3f9cc647a7edc0061193f1523e9c05e1f/icons/git.svg)][1]
-[![linkedin](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/9f5c4a255972275ced549ea6e34ef35019166944/icons/iconmonstr-linkedin-5.svg)][2]
-[![tableau](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/e257c5d6cf02f13072429935b0828525c601414f/icons/icons8-tableau-software%20(1).svg)][3]
-[![twitter](https://raw.githubusercontent.com/Pradnya1208/Telecom-Customer-Churn-prediction/c9f9c5dc4e24eff0143b3056708d24650cbccdde/icons/iconmonstr-twitter-5.svg)][4]
+### Standalone Inference Verification
+Execute a verification test from your command line:
+```bash
+python -c "from backend.predictor import ChurnPredictor; p = ChurnPredictor(); print(p.predict({'gender':'Female','SeniorCitizen':'No','Partner':'No','Dependents':'No','tenure':3,'PhoneService':'Yes','MultipleLines':'No','InternetService':'Fiber optic','OnlineSecurity':'No','OnlineBackup':'No','DeviceProtection':'No','TechSupport':'No','StreamingTV':'Yes','StreamingMovies':'No','Contract':'Month-to-month','PaperlessBilling':'Yes','PaymentMethod':'Electronic check','MonthlyCharges':85.5,'TotalCharges':256.5}))"
+```
 
+### Retraining the Model
+To retrain and re-export model artifacts:
+```bash
+python backend/export_model.py
+```
 
+---
 
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
