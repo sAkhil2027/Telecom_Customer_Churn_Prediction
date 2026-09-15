@@ -84,6 +84,91 @@
                 <h3>Customer Demographics & Tenure</h3>
               </div>
               <div class="fields-grid cols-2">
-                <div class="form-group
+                <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select id="gender" name="gender" required>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="SeniorCitizen">Senior Citizen</label>
+                  <select id="SeniorCitizen" name="SeniorCitizen" required>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="Partner">Has Partner</label>
+                  <select id="Partner" name="Partner" required>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="Dependents">Has Dependents</label>
+                  <select id="Dependents" name="Dependents" required>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Tenure Slider -->
+              <div class="form-group slider-group">
+                <div class="slider-header">
+                  <label for="tenure">Tenure (Months with Company)</label>
+                  <span class="slider-val" id="tenure-val">12 mo</span>
+                </div>
+                <input type="range" id="tenure" name="tenure" min="1" max="72" value="12" oninput="updateTenure(this.value)" />
+                <div class="slider-ticks">
+                  <span>1 mo</span>
+                  <span>24 mo</span>
+                  <span>48 mo</span>
+                  <span>72 mo</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Subscribed Services -->
+            <div class="form-card">
+              <div class="card-header">
+                <span class="card-num">02</span>
+                <h3>Subscriptions & Add-on Services</h3>
+              </div>
+              <div class="fields-grid cols-3">
+                <div class="form-group">
+                  <label for="PhoneService">Phone Service</label>
+                  <select id="PhoneService" name="PhoneService">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="MultipleLines">Multiple Lines</label>
+                  <select id="MultipleLines" name="MultipleLines">
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No phone service">No phone service</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="InternetService">Internet Service</label>
+                  <select id="InternetService" name="InternetService" onchange="handleInternetChange(this.value)">
+                    <option value="Fiber optic">Fiber optic</option>
+                    <option value="DSL">DSL</option>
+                    <option value="No">No Internet</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="OnlineSecurity">Online Security</label>
+                  <select id="OnlineSecurity" name="OnlineSecurity">
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No internet service">No internet service</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="OnlineBackup">Online Backup</
 </body>
 </html>
