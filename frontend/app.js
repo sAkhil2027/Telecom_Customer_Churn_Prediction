@@ -141,4 +141,134 @@ function resetForm() {
 function switchTab(tab) {
   document.getElementById('single-view').classList.toggle('active', tab === 'single');
   document.getElementById('batch-view').classList.toggle('active', tab === 'batch');
-  document.getElementById('tab-si
+  document.getElementById('tab-single-btn').classList.toggle('active', tab === 'single');
+  document.getElementById('tab-batch-btn').classList.toggle('active', tab === 'batch');
+}
+
+// Initialize Gauge Chart
+function initOrUpdateGauge(churnPct, riskColor) {
+  const canvas = document.getElementById('probabilityGauge');
+  const ctx = canvas.getContext('2d');
+
+  const safePct = Math.max(0, 100 - churnPct);
+
+  if (gaugeChart) {
+    gaugeChart.destroy();
+  }
+
+  gaugeChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [churnPct, safePct],
+        backgroundColor: [
+          riskColor,
+          'rgba(255, 255, 255, 0.08)'
+        ],
+        borderWidth: 0,
+        circumference: 240,
+        rotation: 240
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '78%',
+      animation: {
+        animateRotate: true,
+        duration: 900
+      },
+      plugins: {
+        tooltip: { enabled: false }
+      }
+    }
+  });
+
+  // Update center number
+  const pctEl = document.getElementById('gauge-pct');
+  pctEl.textContent = `${churnPct}%`;
+  pctEl.style.color = riskColor;
+}
+
+// Handle Single Customer Prediction
+async function handleSinglePrediction(event) {
+  event.preventDefault();
+  const form = document.getElementById('churn-form');
+  const btn = document.getElementById('predict-btn');
+  const btnText = btn.querySelector('.btn-text');
+  const spinner = document.getElementById('btn-spinner');
+
+  // Prepare Payload
+  const formData = new FormData(form);
+  const payload = {};
+  formData.forEach((value, key) => {
+    if (key === 'tenure') {
+      payload[key] = parseInt(value, 10);
+    } else if (key === 'MonthlyCharges') {
+      payload[key] = parseFloat(value);
+    } else {
+      payload[key] = value;
+    }
+  });
+  payload['TotalCharges'] = payload['tenure'] * payload['MonthlyCharges'];
+
+  // Loading State
+  btn.disabled = true;
+  btnText.textContent = 'Analyzing Churn Probability...';
+  spinner.style.display = 'block';
+
+  try {
+    const response = await fetch('/api/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Prediction failed');
+    }
+
+    const data = await response.json();
+    renderPredictionResult(data);
+  } catch (error) {
+    alert(`Prediction Error: ${error.message}`);
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Run Churn Prediction';
+    spinner.style.display = 'none';
+  }
+}
+
+// Render Prediction Result
+function renderPredictionResult(data) {
+  document.getElementById('results-placeholder').style.display = 'none';
+  const activeCard = document.getElementById('results-active');
+  activeCard.style.display = 'block';
+
+  // Badge
+  const badge = document.getElementById('risk-badge');
+  badge.textContent = data.risk_level;
+  badge.style.color = data.risk_color;
+  badge.style.backgroundColor = `${data.risk_color}22`;
+  badge.style.border = `1px solid ${data.risk_color}66`;
+
+  // Timestamp
+  document.getElementById('result-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  // Gauge & Bars
+  initOrUpdateGauge(data.churn_probability, data.risk_color);
+
+  document.getElementById('stat-churn-num').textContent = `${data.churn_probability}%`;
+  document.getElementById('stat-retention-num').textContent = `${data.retention_probability}%`;
+
+  document.getElementById('bar-churn').style.width = `${data.churn_probability}%`;
+  document.getElementById('bar-retention').style.width = `${data.retention_probability}%`;
+
+  // Risk Factors
+  const factorsList = document.getElementById('factors-list');
+  factorsList.innerHTML = '';
+  if (data.risk_factors && data.risk_factors.length > 0) {
+    data.risk_factors.forEach(rf => {
+      const isSafe = rf.impact.includes('Loyalty') || rf.impact.includes('Retention');
+      const item = document.crea
