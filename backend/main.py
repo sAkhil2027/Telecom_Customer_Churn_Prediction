@@ -39,3 +39,12 @@ def health_check():
         "metrics": predictor.metrics,
         "features_count": len(predictor.feature_order)
     }
+
+@app.post("/api/predict", response_model=PredictionResult)
+def predict_churn(customer: CustomerData):
+    if predictor is None:
+        raise HTTPException(status_code=500, detail="Prediction model is not initialized.")
+    try:
+        return predictor.predict(customer.model_dump())
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Inference error: {str(e)}")
