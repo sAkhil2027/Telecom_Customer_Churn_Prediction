@@ -334,6 +334,87 @@
             <!-- Actionable Retention Strategies -->
             <div class="intel-block">
               <div class="intel-header">
-                <svg width="18" height=
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <h4>Prescribed Retention Playbook</h4>
+              </div>
+              <div class="strategies-list" id="strategies-list">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BATCH CSV TAB -->
+    <section id="batch-view" class="view-panel">
+      <div class="batch-card">
+        <div class="batch-header">
+          <h2>Bulk Customer Churn Scoring</h2>
+          <p>Upload a CSV file containing multiple telecom subscriber records to score them simultaneously and filter churn hazards.</p>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="dropzone" id="csv-dropzone" onclick="document.getElementById('csv-file-input').click()">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <p class="drop-title">Drag & drop your CSV file here, or <span>Browse Computer</span></p>
+          <p class="drop-sub">Supported format: .csv (with identical feature headers as Telco dataset)</p>
+          <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="handleFileSelected(event)" />
+        </div>
+
+        <div id="file-selected-badge" class="file-badge" style="display: none;">
+          <span id="file-name-text">filename.csv</span>
+          <button type="button" class="btn-run-batch" id="run-batch-btn" onclick="uploadAndScoreBatch()">Run Bulk Prediction</button>
+        </div>
+
+        <!-- Batch Metrics Dashboard -->
+        <div id="batch-results-wrap" style="display: none;">
+          <div class="metrics-row">
+            <div class="metric-card">
+              <span class="m-label">Total Evaluated</span>
+              <span class="m-val" id="batch-total">0</span>
+            </div>
+            <div class="metric-card danger">
+              <span class="m-label">High Risk Customers</span>
+              <span class="m-val" id="batch-high-risk">0</span>
+            </div>
+            <div class="metric-card warning">
+              <span class="m-label">Predicted Churn Rate</span>
+              <span class="m-val" id="batch-rate">0%</span>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="batch-table">
+              <thead>
+                <tr>
+                  <th>Row #</th>
+                  <th>Churn Prediction</th>
+                  <th>Churn Probability</th>
+                  <th>Risk Tier</th>
+                </tr>
+              </thead>
+              <tbody id="batch-table-body">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Powered by Scikit-Learn Tuned Gradient Boosting & FastAPI &bull; Production Architecture</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
 </body>
 </html>
