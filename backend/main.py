@@ -48,3 +48,38 @@ def predict_churn(customer: CustomerData):
         return predictor.predict(customer.model_dump())
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Inference error: {str(e)}")
+
+@app.post("/api/predict-batch", response_model=BatchPredictionResponse)
+async def predict_batch(file: UploadFile = File(...)):
+    if predictor is None:
+        raise HTTPException(status_code=500, detail="Prediction model is not initialized.")
+    if not file.filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Only .csv files are supported for batch scoring.")
+
+    try:
+        contents = await file.read()
+        df = pd.read_csv(io.StringIO(contents.decode("utf-8")))
+
+        results, high_risk_count = [], 0
+        for idx, row in df.iterrows():
+            pred = predictor.predict(row.to_dict())
+            if pred["risk_level"] == "High Risk":
+                high_risk_count += 1
+            results.append(BatchItemResult(
+                row_id=idx + 1,
+                churn_prediction=pred["churn_prediction"],
+                churn_probability=pred["churn_probability"],
+                risk_level=pred["risk_level"]
+            ))
+
+        total = len(results)
+        churn_rate = round((high_risk_count / total * 100), 1) if total > 0 else 0.0
+
+        return BatchPredictionResponse(
+            total_processed=total,
+            high_risk_count=high_risk_count,
+            churn_rate_predicted=churn_rate,
+            predictions=results[:200]
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to process CSV file: {str(e)}")
