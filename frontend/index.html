@@ -249,6 +249,91 @@
                 <div class="slider-header">
                   <label for="MonthlyCharges">Monthly Charges</label>
                   <span class="slider-val" id="monthly-val">$75.00</span>
-  
+                </div>
+                <input type="range" id="MonthlyCharges" name="MonthlyCharges" min="18" max="120" step="0.5" value="75" oninput="updateMonthly(this.value)" />
+                <div class="slider-ticks">
+                  <span>$18</span>
+                  <span>$50</span>
+                  <span>$85</span>
+                  <span>$120</span>
+                </div>
+              </div>
+
+              <!-- Estimated Total Charges Info -->
+              <div class="estimated-box">
+                <span>Estimated Lifetime Charges:</span>
+                <strong id="estimated-total">$900.00</strong>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="predict-btn">
+              <span class="btn-text">Run Churn Prediction</span>
+              <div class="btn-spinner" id="btn-spinner"></div>
+            </button>
+          </form>
+        </div>
+
+        <!-- RESULTS COLUMN -->
+        <div class="results-column">
+          <!-- Empty State -->
+          <div id="results-placeholder" class="results-card placeholder-card">
+            <div class="placeholder-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <h3>Ready for Assessment</h3>
+            <p>Select a quick preset above or customize the customer attributes, then click <strong>Run Churn Prediction</strong> to view real-time risk scores and retention insights.</p>
+          </div>
+
+          <!-- Active Results Container -->
+          <div id="results-active" class="results-card active-card" style="display: none;">
+            <!-- Header Score Badge -->
+            <div class="result-top">
+              <div class="risk-badge-wrapper">
+                <span class="badge-label">Predicted Classification:</span>
+                <div class="risk-badge" id="risk-badge">High Risk</div>
+              </div>
+              <div class="result-timestamp" id="result-time">Just now</div>
+            </div>
+
+            <!-- Gauge Meter & Probabilities -->
+            <div class="meter-section">
+              <div class="chart-container">
+                <canvas id="probabilityGauge"></canvas>
+                <div class="gauge-center-text">
+                  <span class="gauge-pct" id="gauge-pct">0%</span>
+                  <span class="gauge-lbl">Churn Risk</span>
+                </div>
+              </div>
+              <div class="prob-breakdown">
+                <div class="prob-stat danger">
+                  <span class="stat-name">Churn Likelihood</span>
+                  <span class="stat-num" id="stat-churn-num">0%</span>
+                  <div class="bar-track"><div class="bar-fill churn" id="bar-churn"></div></div>
+                </div>
+                <div class="prob-stat success">
+                  <span class="stat-name">Retention Odds</span>
+                  <span class="stat-num" id="stat-retention-num">0%</span>
+                  <div class="bar-track"><div class="bar-fill retention" id="bar-retention"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personalized Risk Factors -->
+            <div class="intel-block">
+              <div class="intel-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <h4>Identified Risk Drivers</h4>
+              </div>
+              <div class="factors-list" id="factors-list">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Actionable Retention Strategies -->
+            <div class="intel-block">
+              <div class="intel-header">
+                <svg width="18" height=
 </body>
 </html>
