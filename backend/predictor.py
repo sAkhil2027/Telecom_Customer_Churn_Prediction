@@ -45,6 +45,33 @@ class ChurnPredictor:
         df_scaled[self.num_cols] = self.scaler.transform(df_input[self.num_cols])
         return df_scaled
 
+    def predict(self, raw_customer: Dict[str, Any]) -> Dict[str, Any]:
+        df_scaled = self.preprocess(raw_customer)
+        churn_prob = float(self.model.predict_proba(df_scaled)[0, 1])
+        churn_pred = int(churn_prob >= 0.5)
+
+        if churn_prob >= 0.60:
+            risk_level, risk_color = "High Risk", "#ef4444"
+        elif churn_prob >= 0.35:
+            risk_level, risk_color = "Moderate Risk", "#f59e0b"
+        else:
+            risk_level, risk_color = "Low Risk", "#10b981"
+
+        risk_factors = self._extract_risk_factors(raw_customer)
+        retention_strategies = self._generate_retention_strategies(raw_customer)
+
+        return {
+            "churn_prediction": "Yes" if churn_pred == 1 else "No",
+            "churn_code": churn_pred,
+            "churn_probability": round(churn_prob * 100, 1),
+            "retention_probability": round((1.0 - churn_prob) * 100, 1),
+            "risk_level": risk_level,
+            "risk_color": risk_color,
+            "risk_factors": risk_factors,
+            "retention_strategies": retention_strategies,
+            "metrics": self.metrics
+        }
+
     def _extract_risk_factors(self, raw: Dict[str, Any]) -> List[Dict[str, str]]:
         factors = []
         contract = str(raw.get("Contract", ""))
@@ -75,27 +102,23 @@ class ChurnPredictor:
 
         return factors
 
-    def predict(self, raw_customer: Dict[str, Any]) -> Dict[str, Any]:
-        df_scaled = self.preprocess(raw_customer)
-        churn_prob = float(self.model.predict_proba(df_scaled)[0, 1])
-        churn_pred = int(churn_prob >= 0.5)
+    def _generate_retention_strategies(self, raw: Dict[str, Any]) -> List[Dict[str, str]]:
+        strategies = []
+        contract = str(raw.get("Contract", ""))
+        tech_support = str(raw.get("TechSupport", ""))
+        pay_method = str(raw.get("PaymentMethod", ""))
+        monthly = float(raw.get("MonthlyCharges", 0.0))
 
-        if churn_prob >= 0.60:
-            risk_level, risk_color = "High Risk", "#ef4444"
-        elif churn_prob >= 0.35:
-            risk_level, risk_color = "Moderate Risk", "#f59e0b"
-        else:
-            risk_level, risk_color = "Low Risk", "#10b981"
+        if contract == "Month-to-month":
+            strategies.append({"title": "Contract Transition Incentive", "action": "Offer a 15% discount for upgrading to a 1-year or 2-year contract plan.", "priority": "High Priority"})
+        if tech_support == "No":
+            strategies.append({"title": "Complimentary Tech Support Trial", "action": "Provide 3 months of free Premium Tech Support & Online Security.", "priority": "High Priority"})
+        if pay_method == "Electronic check":
+            strategies.append({"title": "Automated Billing Incentive", "action": "Offer a one-time $10 credit for switching to Credit Card or Bank Auto-Pay.", "priority": "Medium Priority"})
+        if monthly > 80:
+            strategies.append({"title": "Plan Optimization Review", "action": "Proactively reach out with a loyalty consultation to optimize service bundle.", "priority": "Medium Priority"})
 
-        risk_factors = self._extract_risk_factors(raw_customer)
+        if not strategies:
+            strategies.append({"title": "Loyalty Appreciation", "action": "Enroll customer in VIP rewards program to reinforce brand satisfaction.", "priority": "Standard"})
 
-        return {
-            "churn_prediction": "Yes" if churn_pred == 1 else "No",
-            "churn_code": churn_pred,
-            "churn_probability": round(churn_prob * 100, 1),
-            "retention_probability": round((1.0 - churn_prob) * 100, 1),
-            "risk_level": risk_level,
-            "risk_color": risk_color,
-            "risk_factors": risk_factors,
-            "metrics": self.metrics
-        }
+        return strategies
