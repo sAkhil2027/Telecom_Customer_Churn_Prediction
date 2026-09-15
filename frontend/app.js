@@ -271,4 +271,112 @@ function renderPredictionResult(data) {
   if (data.risk_factors && data.risk_factors.length > 0) {
     data.risk_factors.forEach(rf => {
       const isSafe = rf.impact.includes('Loyalty') || rf.impact.includes('Retention');
-      const item = document.crea
+      const item = document.createElement('div');
+      item.className = 'factor-item';
+      item.innerHTML = `
+        <div class="factor-top">
+          <span class="factor-title">${rf.factor}</span>
+          <span class="impact-tag ${isSafe ? 'safe' : ''}">${rf.impact}</span>
+        </div>
+        <p class="factor-desc">${rf.detail}</p>
+      `;
+      factorsList.appendChild(item);
+    });
+  } else {
+    factorsList.innerHTML = '<div class="factor-item"><p class="factor-desc">No dominant risk factors identified.</p></div>';
+  }
+
+  // Retention Strategies
+  const stratList = document.getElementById('strategies-list');
+  stratList.innerHTML = '';
+  if (data.retention_strategies && data.retention_strategies.length > 0) {
+    data.retention_strategies.forEach(st => {
+      const item = document.createElement('div');
+      item.className = 'strategy-item';
+      item.innerHTML = `
+        <div class="strategy-top">
+          <span class="strategy-title">${st.title}</span>
+          <span class="priority-tag">${st.priority}</span>
+        </div>
+        <p class="strategy-action">${st.action}</p>
+      `;
+      stratList.appendChild(item);
+    });
+  }
+
+  // Smooth scroll into results on mobile
+  if (window.innerWidth < 1024) {
+    activeCard.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+// BATCH FILE HANDLING
+function handleFileSelected(event) {
+  const file = event.target.files[0];
+  if (file) {
+    selectedBatchFile = file;
+    document.getElementById('file-name-text').textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+    document.getElementById('file-selected-badge').style.display = 'flex';
+  }
+}
+
+// Upload & Score Batch CSV
+async function uploadAndScoreBatch() {
+  if (!selectedBatchFile) return;
+
+  const btn = document.getElementById('run-batch-btn');
+  btn.disabled = true;
+  btn.textContent = 'Scoring CSV...';
+
+  const formData = new FormData();
+  formData.append('file', selectedBatchFile);
+
+  try {
+    const response = await fetch('/api/predict-batch', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Batch processing failed');
+    }
+
+    const data = await response.json();
+    renderBatchResults(data);
+  } catch (err) {
+    alert(`Batch Scoring Error: ${err.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Run Bulk Prediction';
+  }
+}
+
+// Render Batch Results
+function renderBatchResults(data) {
+  document.getElementById('batch-results-wrap').style.display = 'block';
+  document.getElementById('batch-total').textContent = data.total_processed;
+  document.getElementById('batch-high-risk').textContent = data.high_risk_count;
+  document.getElementById('batch-rate').textContent = `${data.churn_rate_predicted}%`;
+
+  const tbody = document.getElementById('batch-table-body');
+  tbody.innerHTML = '';
+
+  data.predictions.forEach(p => {
+    const tr = document.createElement('tr');
+    const color = p.risk_level === 'High Risk' ? 'var(--risk-high)' : (p.risk_level === 'Moderate Risk' ? 'var(--risk-mod)' : 'var(--risk-low)');
+    tr.innerHTML = `
+      <td>#${p.row_id}</td>
+      <td><strong>${p.churn_prediction}</strong></td>
+      <td>${p.churn_probability}%</td>
+      <td><span style="color: ${color}; font-weight: 600;">${p.risk_level}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Initial setup on window load
+window.addEventListener('DOMContentLoaded', () => {
+  updateTenure(12);
+  updateMonthly(75);
+});
