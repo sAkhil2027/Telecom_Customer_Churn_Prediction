@@ -1,0 +1,34 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Datasets
+data.csv
+*.csv
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# IDEs & System Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+[Dd]esktop.ini
+
+# Logs & Databases
+*.log
+*.sqlite3
+*.db
