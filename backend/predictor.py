@@ -21,3 +21,26 @@ class ChurnPredictor:
         self.cat_cols = self.meta["cat_cols"]
         self.cat_mappings = self.meta["cat_mappings"]
         self.metrics = self.meta.get("metrics", {})
+
+    def preprocess(self, data_dict: Dict[str, Any]) -> pd.DataFrame:
+        row = data_dict.copy()
+        tenure = int(row.get("tenure", 1))
+        monthly = float(row.get("MonthlyCharges", 0.0))
+        total = row.get("TotalCharges")
+        row["tenure"] = tenure
+        row["MonthlyCharges"] = monthly
+        row["TotalCharges"] = float(total) if total is not None and str(total).strip() != "" else tenure * monthly
+
+        encoded = {}
+        for c in self.feature_order:
+            if c in self.cat_cols:
+                raw_val = str(row.get(c, "")).strip()
+                mapping = self.cat_mappings.get(c, {})
+                encoded[c] = mapping.get(raw_val, mapping.get(raw_val.capitalize(), 0))
+            else:
+                encoded[c] = float(row.get(c, 0.0))
+
+        df_input = pd.DataFrame([encoded])[self.feature_order]
+        df_scaled = df_input.copy()
+        df_scaled[self.num_cols] = self.scaler.transform(df_input[self.num_cols])
+        return df_scaled
