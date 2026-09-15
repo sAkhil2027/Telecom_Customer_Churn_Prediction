@@ -29,6 +29,8 @@ except Exception as e:
     print(f"Warning: Predictor failed to load initially: {e}")
     predictor = None
 
+frontend_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+
 @app.get("/api/health")
 def health_check():
     if predictor is None:
@@ -83,3 +85,11 @@ async def predict_batch(file: UploadFile = File(...)):
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to process CSV file: {str(e)}")
+
+if os.path.exists(frontend_dir):
+    app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
+
+    @app.get("/")
+    def serve_frontend():
+        index_file = os.path.join(frontend_dir, "index.html")
+        return FileResponse(index_file) if os.path.exists(index_file) else JSONResponse({"message": "Frontend index.html not found"})
