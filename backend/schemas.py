@@ -21,3 +21,24 @@ class CustomerData(BaseModel):
     PaymentMethod: str = Field(..., example="Electronic check")
     MonthlyCharges: float = Field(..., ge=0, example=85.5)
     TotalCharges: Optional[float] = Field(None, example=256.5)
+
+class RiskFactor(BaseModel):
+    factor: str
+    impact: str
+    detail: str
+
+class RetentionStrategy(BaseModel):
+    title: str
+    action: str
+    priority: str
+
+class PredictionResult(BaseModel):
+    churn_prediction: str
+    churn_code: int
+    churn_probability: float
+    retention_probability: float
+    risk_level: str
+    risk_color: str
+    risk_factors: List[RiskFactor]
+    retention_strategies: List[RetentionStrategy]
+    metrics: Dict[str, Any]
