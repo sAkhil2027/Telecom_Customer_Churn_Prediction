@@ -42,3 +42,15 @@ class PredictionResult(BaseModel):
     risk_factors: List[RiskFactor]
     retention_strategies: List[RetentionStrategy]
     metrics: Dict[str, Any]
+
+class BatchItemResult(BaseModel):
+    row_id: int
+    churn_prediction: str
+    churn_probability: float
+    risk_level: str
+
+class BatchPredictionResponse(BaseModel):
+    total_processed: int
+    high_risk_count: int
+    churn_rate_predicted: float
+    predictions: List[BatchItemResult]
