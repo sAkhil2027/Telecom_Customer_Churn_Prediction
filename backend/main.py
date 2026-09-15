@@ -22,3 +22,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+try:
+    predictor = ChurnPredictor()
+except Exception as e:
+    print(f"Warning: Predictor failed to load initially: {e}")
+    predictor = None
+
+@app.get("/api/health")
+def health_check():
+    if predictor is None:
+        return {"status": "unhealthy", "error": "Model artifacts not loaded"}
+    return {
+        "status": "healthy",
+        "model_type": "GradientBoostingClassifier (Tuned)",
+        "metrics": predictor.metrics,
+        "features_count": len(predictor.feature_order)
+    }
