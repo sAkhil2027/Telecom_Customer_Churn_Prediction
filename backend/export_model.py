@@ -43,3 +43,8 @@ def encode_features(df):
 
     feature_order = [c for c in df_encoded.columns if c != target_col]
     return df_encoded, feature_order, num_cols, cat_cols, cat_mappings, target_mapping
+
+def train_classifier(X_train, y_train):
+    model = GradientBoostingClassifier(max_depth=2, n_estimators=250, learning_rate=0.08, random_state=42)
+    model.fit(X_train, y_train)
+    return model
