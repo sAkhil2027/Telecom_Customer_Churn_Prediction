@@ -23,3 +23,23 @@ def load_and_preprocess_data(base_dir):
     df["TotalCharges"] = df["TotalCharges"].fillna(df["TotalCharges"].mean())
     df["SeniorCitizen"] = df["SeniorCitizen"].replace({0: "No", 1: "Yes"})
     return df
+
+def encode_features(df):
+    target_col = "Churn"
+    num_cols = ["tenure", "MonthlyCharges", "TotalCharges"]
+    cat_cols = [c for c in df.columns if c not in num_cols and c != target_col]
+
+    cat_mappings = {}
+    df_encoded = df.copy()
+
+    for c in cat_cols:
+        le = LabelEncoder()
+        df_encoded[c] = le.fit_transform(df[c].astype(str))
+        cat_mappings[c] = {str(k): int(v) for v, k in enumerate(le.classes_)}
+
+    target_le = LabelEncoder()
+    df_encoded[target_col] = target_le.fit_transform(df[target_col])
+    target_mapping = {str(k): int(v) for v, k in enumerate(target_le.classes_)}
+
+    feature_order = [c for c in df_encoded.columns if c != target_col]
+    return df_encoded, feature_order, num_cols, cat_cols, cat_mappings, target_mapping
